@@ -1,8 +1,13 @@
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
-var assembly = AssemblyDefinition.ReadAssembly("your.dll");
+var assembly = AssemblyDefinition.ReadAssembly("test.dll");
+
+// sonuç: Class -> Method listesi
+var result = new Dictionary<string, HashSet<string>>();
 
 foreach (var type in assembly.MainModule.Types)
 {
@@ -12,29 +17,22 @@ foreach (var type in assembly.MainModule.Types)
 
         foreach (var instruction in method.Body.Instructions)
         {
-            // new O... class
-            if (instruction.OpCode == OpCodes.Newobj)
-            {
-                var methodRef = instruction.Operand as MethodReference;
-                var declaringType = methodRef.DeclaringType;
-
-                if (declaringType.Name.StartsWith("O"))
-                {
-                    Console.WriteLine($"New instance: {declaringType.FullName}");
-                }
-            }
-
-            // method çağrısı
-            if (instruction.OpCode == OpCodes.Call || 
+            if (instruction.OpCode == OpCodes.Call ||
                 instruction.OpCode == OpCodes.Callvirt)
             {
-                var calledMethod = instruction.Operand as MethodReference;
+                var called = instruction.Operand as MethodReference;
+                if (called == null) continue;
 
-                if (calledMethod.DeclaringType.Name.StartsWith("O"))
-                {
-                    Console.WriteLine(
-                        $"Call: {calledMethod.DeclaringType.Name}.{calledMethod.Name}");
-                }
+                var className = called.DeclaringType.Name;
+
+                // filtre (O ile başlayanlar)
+                if (!className.StartsWith("O"))
+                    continue;
+
+                if (!result.ContainsKey(className))
+                    result[className] = new HashSet<string>();
+
+                result[className].Add(called.Name);
             }
         }
     }
