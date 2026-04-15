@@ -1,12 +1,14 @@
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 
 public static class DllAnalyzer
 {
-    public static Dictionary<string, List<string>> GetClassMethodMap(string dllPath)
+    public static string GetClassMethodMapAsJson(string dllPath)
     {
-        var result = new Dictionary<string, HashSet<string>>();
+        var result = new Dictionary<string, Dictionary<string, MethodDetail>>();
 
         var assembly = AssemblyDefinition.ReadAssembly(dllPath);
 
@@ -14,13 +16,11 @@ public static class DllAnalyzer
         {
             foreach (var method in type.Methods)
             {
-                // Body yoksa geç
                 if (!method.HasBody)
                     continue;
 
                 foreach (var instruction in method.Body.Instructions)
                 {
-                    // Method çağrısı yakala
                     if (instruction.OpCode == OpCodes.Call ||
                         instruction.OpCode == OpCodes.Callvirt)
                     {
@@ -30,27 +30,48 @@ public static class DllAnalyzer
 
                         var className = called.DeclaringType.Name;
 
-                        // Sadece O ile başlayan classlar
+                        // filtre
                         if (!className.StartsWith("O"))
                             continue;
 
                         if (!result.ContainsKey(className))
-                            result[className] = new HashSet<string>();
+                            result[className] = new Dictionary<string, MethodDetail>();
 
-                        result[className].Add(called.Name);
+                        var methodName = called.Name;
+
+                        if (!result[className].ContainsKey(methodName))
+                        {
+                            var parameters = called.Parameters
+                                .Select(p => $"{p.ParameterType.Name} {p.Name}")
+                                .ToList();
+
+                            var returnType = called.ReturnType.Name;
+
+                            result[className][methodName] = new MethodDetail
+                            {
+                                Method = methodName,
+                                Parameters = parameters,
+                                ReturnType = returnType
+                            };
+                        }
                     }
                 }
             }
         }
 
-        // HashSet → List dönüşümü
-        var finalResult = new Dictionary<string, List<string>>();
-
-        foreach (var item in result)
+        // JSON serialize
+        var options = new JsonSerializerOptions
         {
-            finalResult[item.Key] = new List<string>(item.Value);
-        }
+            WriteIndented = true
+        };
 
-        return finalResult;
+        return JsonSerializer.Serialize(result, options);
     }
+}
+
+public class MethodDetail
+{
+    public string Method { get; set; }
+    public List<string> Parameters { get; set; }
+    public string ReturnType { get; set; }
 }
