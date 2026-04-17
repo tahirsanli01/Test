@@ -1,8 +1,13 @@
-index=YOUR_INDEX earliest=-14d@d latest=@d
+index=YOUR_INDEX
 
-| eval period=if(_time>=relative_time(now(), "-7d@d"), "current", "prev")
+| eval period=case(
+    _time>=strptime("2026-04-01","%Y-%m-%d") AND _time<strptime("2026-04-08","%Y-%m-%d"), "prev",
+    _time>=strptime("2026-04-08","%Y-%m-%d") AND _time<strptime("2026-04-15","%Y-%m-%d"), "current"
+)
 
-| eval is_error=if(match(_raw,"(?i)error"),1,0)
+| where isnotnull(period)
+
+| eval is_error=if(match(_raw,"(?i)NullReferenceException"),1,0)
 
 | stats 
     count as total
@@ -15,8 +20,8 @@ index=YOUR_INDEX earliest=-14d@d latest=@d
 
 | eval prev=coalesce(prev,0), current=coalesce(current,0)
 
-| eval diff=current-prev
-| eval rate_change=case(
+| eval diff = current - prev
+| eval rate_change = case(
     prev=0 AND current>0, 100,
     prev>0, round((diff/prev)*100,2),
     true(), null()
