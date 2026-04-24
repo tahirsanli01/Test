@@ -1,9 +1,7 @@
-index=* host=* ERROR "Stack Trace:"
-| where ((CustomerID=="$SearchCustomerNo$" OR "$SearchCustomerNo$"=="0")
-    AND (TxnName=="$SearchTransactionName$" OR "$SearchTransactionName$"=="Arama"))
-| eval HataMesaji = mvindex(split(_raw, "Stack Trace:"), 1)
-| eval HataMesaji = mvindex(split(HataMesaji, "\n"), 0)
-| eval HataMesaji = trim(HataMesaji)
-| where HataMesaji != ""
-| stats count by HataMesaji
+index=your_index log_level=ERROR
+| stats count by TxnName
 | sort -count
+| head 5
+| fields TxnName
+| map search="search index=your_index log_level=ERROR TxnName=$TxnName$ 
+    | timechart span=1h count by TxnName"
