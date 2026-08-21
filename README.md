@@ -1,38 +1,25 @@
-Yalnızca Mobil projesini incele. İB, Seal MFA, MFA ve OTP kapsam dışıdır.
+Önce yalnızca docs/copilot/mobile-transaction/PLAYBOOK.md dosyasını oku.
 
-Amaç: Yeni Mobil transaction’ları minimum kullanıcı sorusuyla geliştirebilmek için kalıcı ve kısa bir çalışma hafızası oluşturmak.
+PLAYBOOK’un doğruluğunu kontrol etmek için daha önce incelenmeyen, güncel ve MFA içermeyen en fazla 2 Mobil transaction incele.
 
-Token tasarrufu kuralları:
+Repository’yi baştan tarama. Yalnızca PLAYBOOK ile çelişen veya eksik görünen konuların ilgili dosya ve symbol’lerini aç.
 
-* Repository’yi topluca okuma.
-* Önce dosya adları ve symbol aramasıyla transaction yapısını tespit et.
-* En güncel, çalışan ve MFA içermeyen yalnızca 3 temsilî transaction incele.
-* Her transaction’da yalnızca ilgili ekran, navigation, state, service/API, model, mapper, validation, resource ve test dosyalarını aç.
-* Büyük kod bloklarını çıktıya kopyalama.
-* Git geçmişini yalnızca dosya ilişkisini anlayamazsan kullan.
-* İş kodunu değiştirme.
+Yapılacaklar:
 
-Şunları öğren:
+1. Kanıtlanan eksikleri PLAYBOOK’a ekle.
+2. Yanlış genellemeleri düzelt.
+3. Eski mimariyi güncel standart olarak kaydetme.
+4. Tek transaction’a özgü business bilgisini genel kural yapma.
+5. İB, MFA, Seal MFA veya OTP bilgisi ekleme.
+6. PLAYBOOK’u 200 satır civarında tut.
+7. Büyük kod örneği ekleme.
 
-* Mobil teknoloji ve mimari
-* Transaction’ın giriş, form, onay, servis çağrısı ve sonuç akışı
-* Ekranlar arası veri taşıma
-* Navigation
-* State yönetimi
-* Servis/API bağlantısı
-* Request/response mapping
-* Validation ve hata yönetimi
-* Loading ve tekrar gönderim kontrolü
-* Resource/configuration
-* Yeni dosya path, isim ve package/namespace kuralları
-* Test, lint ve build komutları
+İncelenen toplam 5 transaction için kısa indeks oluştur:
 
-Sonucu şu dosyaya yaz:
+docs/copilot/mobile-transaction/EXAMPLES.md
 
-docs/copilot/mobile-transaction/PLAYBOOK.md
+Tablo:
 
-Her kuralda kısa kanıt kullan:
+| Transaction | Tür | Ana ekranlar | Navigation/state | Service/API | Önemli dosyalar |
 
-dosya yolu | symbol | yaklaşık satır | örnek transaction
-
-PLAYBOOK en fazla 200 satır ve mümkünse 2.500 token olsun. Tekrar ve genel yazılım açıklaması ekleme. Sohbet cevabında yalnızca incelenen 3 transaction’ı ve oluşturulan dosyayı bildir.
+Business kodunu değiştirme. Sonuçta yalnızca güncellenen dokümanları ve bulunan önemli çelişkileri bildir.
