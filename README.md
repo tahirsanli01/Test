@@ -75,4 +75,144 @@ Sohbet cevabında oluşturulan dosyaları listelemek dışında ayrıntı verme.
 
 
 
+Bu projedeki yazım, kodlama ve performans kurallarını keşfet; kalıcı olarak belgele ve otomatik denetlenebilir hâle getir.
+
+Amaç
+
+Projede kullanılan:
+
+* Değişken, sabit, property, metot, class, interface ve dosya adlandırma kuralları
+* Collection/list tanımlama kuralları
+* Liste oluşturulurken mümkünse başlangıç kapasitesi verilmesi
+* Metot ve class yapısı
+* Erişim belirleyicileri
+* Null kontrolü
+* Exception yönetimi
+* Logging
+* Kaynak yönetimi
+* Async kullanımı
+* Performans kuralları
+* Güvenlik kuralları
+* Kod tekrarları
+* Yasaklanan kullanım biçimleri
+* Statik analiz veya kalite kontrol kuralları
+
+gibi standartları tespit et.
+
+Çalışma şekli
+
+1. Önce proje teknolojisini ve klasör yapısını belirle.
+2. Tüm dosyaları ayrıntılı biçimde okumak yerine önce şu kaynakları incele:
+    * README ve dokümantasyon dosyaları
+    * .editorconfig
+    * Linter/analyzer ayarları
+    * Build dosyaları
+    * Sonar, StyleCop, Roslyn, ESLint veya eşdeğer yapılandırmalar
+    * Ortak/base class’lar
+    * Helper ve utility sınıfları
+    * Benzer iş yapan, güncel ve yoğun kullanılan örnek dosyalar
+    * Varsa test projeleri
+3. Kuralları tek bir dosyadan tahmin etme. Birden fazla güncel örnekte tekrar eden uygulamaları karşılaştır.
+4. Eski kod, istisnai kod veya tesadüfi kullanım biçimlerini genel kural olarak kabul etme.
+5. Kesin kanıt bulunmayan kuralları uydurma. Bunları “aday kural” olarak işaretle.
+6. Mevcut proje dosyalarını bu aşamada değiştirme.
+
+Oluşturulacak belgeler
+
+Proje kökünde .github/copilot-instructions.md oluştur veya mevcutsa dikkatlice güncelle.
+
+Ayrıca docs/CODING_RULES.md oluştur. Her kural için şunları yaz:
+
+* Kural kimliği
+* Kategori
+* Kural açıklaması
+* Doğru kullanım örneği
+* Yanlış kullanım örneği
+* Kuralın tespit edildiği dosya ve satır aralığı
+* Güven seviyesi: Kesin / Güçlü / Aday
+* Otomatik denetlenebilir mi?
+* İhlal önem seviyesi: Kritik / Yüksek / Orta / Düşük
+* Önerilen düzeltme
+
+Örnek olarak şu kuralı özellikle araştır:
+
+Bir listenin alacağı yaklaşık eleman sayısı önceden biliniyorsa liste başlangıç kapasitesi belirtilmelidir.
+
+Ancak bunu doğrudan kesin proje kuralı kabul etme; proje kodunda, analiz ayarlarında veya dokümantasyonda kanıt ara.
+
+Otomatik denetim
+
+Projenin teknolojisine uygun bir denetim çözümü oluştur:
+
+* Hazır analyzer/linter ile güvenilir şekilde denetlenebilen kurallar için mevcut aracı yapılandır.
+* Hazır araçla denetlenemeyen proje özel kuralları için mümkünse özel analyzer/linter veya denetim scripti oluştur.
+* C#/.NET ise tercihen Roslyn Analyzer kullan.
+* JavaScript/TypeScript ise ESLint custom rule kullan.
+* Java/Kotlin ise uygun statik analiz altyapısını kullan.
+* Başka bir teknoloji ise projeye en uygun, build sürecine eklenebilen çözümü seç.
+* Regex ile kod analizi yalnızca güvenilir parser/analyzer seçeneği yoksa kullan.
+* Denetim aracı varsayılan olarak yalnızca rapor üretmeli; kodu otomatik değiştirmemelidir.
+* Her özel kural için en az bir uygun kod ve bir ihlal testi ekle.
+
+Denetim raporu
+
+Mevcut projeyi belirlenen kesin ve güçlü kurallara göre denetle ve reports/CODING_RULES_AUDIT.md oluştur.
+
+Her bulguda şunları göster:
+
+* Kural kimliği
+* Önem seviyesi
+* Dosya yolu
+* Satır numarası
+* İhlal açıklaması
+* Mevcut kodun kısa özeti
+* Önerilen düzeltme
+* Otomatik düzeltilebilir mi?
+
+Aynı ihlalleri tek tek uzun biçimde tekrar etme; kural bazında grupla ve toplam sayıyı belirt.
+
+Bağlam ve token tasarrufu
+
+* Daha önce oluşturulan docs/CODING_RULES.md güncelse projeyi tekrar tamamen tarama.
+* Sonraki çalışmalarda önce bu belgeyi ve değişen dosyaları oku.
+* Belgedeki her kuralın kaynak dosya referanslarını sakla.
+* Yalnızca değişen, yeni veya ilgili dosyaları yeniden incele.
+* Gereksiz dosya içeriklerini yanıta taşıma.
+* Büyük üretilmiş dosyaları, bağımlılık klasörlerini, build çıktılarını ve vendor dosyalarını inceleme.
+* Bir dosyayı tekrar okumadan önce daha önce kaydedilmiş bilginin yeterli olup olmadığını kontrol et.
+
+Güvenlik
+
+* İş mantığını değiştirme.
+* Mevcut kullanıcı değişikliklerini ezme.
+* Derleme veya test hatası bulunan projede önce hatanın senden önce var olup olmadığını kontrol et.
+* Kuralları otomatik düzeltme; yalnızca denetim altyapısını ve raporları oluştur.
+* Emin olunmayan bulguları kesin ihlal olarak raporlama.
+
+Doğrulama
+
+İşlem sonunda:
+
+1. Oluşturulan denetim aracını çalıştır.
+2. Analyzer/linter testlerini çalıştır.
+3. Mümkünse projeyi derle.
+4. Yanlış pozitif olabilecek bulguları ayır.
+5. Belgelerdeki dosya ve satır referanslarını doğrula.
+
+Son yanıt
+
+Uzun açıklama yapma. Yalnızca şunları bildir:
+
+* Tespit edilen kesin/güçlü/aday kural sayıları
+* Oluşturulan veya değiştirilen dosyalar
+* Bulgu sayılarının önem seviyesine göre özeti
+* Çalıştırılan doğrulamalar ve sonuçları
+* İnsan kararı gereken aday kurallar
+* Denetimi yeniden çalıştırmak için tek komut
+
+Eksik bilgi gerektiğinde yalnızca ilerlemeyi gerçekten engelleyen tek bir soru sor. Diğer konularda projedeki kanıtlara göre karar ver ve işlemi tamamla.
+
+
+
+
 
