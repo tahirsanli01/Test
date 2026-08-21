@@ -1,218 +1,188 @@
-Önce yalnızca docs/copilot/mobile-transaction/PLAYBOOK.md dosyasını oku.
+Verdiğim nesne adını projede bul, türünü belirle, kurallara göre denetle ve onayım olmadan hiçbir kaynak kodu değiştirme.
 
-PLAYBOOK’un doğruluğunu kontrol etmek için daha önce incelenmeyen, güncel ve MFA içermeyen en fazla 2 Mobil transaction incele.
+NESNE_ADI: [BURAYA_NESNE_ADINI_YAZ]
 
-Repository’yi baştan tarama. Yalnızca PLAYBOOK ile çelişen veya eksik görünen konuların ilgili dosya ve symbol’lerini aç.
+1. Kalıcı kural dosyası
 
-Yapılacaklar:
+Önce proje kökündeki .github/WALL_DTO_RULES.md dosyasını kontrol et.
 
-1. Kanıtlanan eksikleri PLAYBOOK’a ekle.
-2. Yanlış genellemeleri düzelt.
-3. Eski mimariyi güncel standart olarak kaydetme.
-4. Tek transaction’a özgü business bilgisini genel kural yapma.
-5. İB, MFA, Seal MFA veya OTP bilgisi ekleme.
-6. PLAYBOOK’u 200 satır civarında tut.
-7. Büyük kod örneği ekleme.
+Dosya varsa
 
-İncelenen toplam 5 transaction için kısa indeks oluştur:
+* Dosyayı oku ve ana kural kaynağı olarak kullan.
+* Kuralları keşfetmek için projeyi yeniden genel taramadan geçirme.
+* Yalnızca verilen nesneyi, doğrudan ilişkili sınıfları ve gerekli kullanım noktalarını incele.
+* Yeni ve açık bir kural tespit edersen doğrudan ekleme; raporda “önerilen yeni kural” olarak belirt.
 
-docs/copilot/mobile-transaction/EXAMPLES.md
+Dosya yoksa
 
-Tablo:
+Projede kullanılan WALL ve DTO nesnelerinden güncel ve temsil gücü yüksek örnekleri incele.
 
-| Transaction | Tür | Ana ekranlar | Navigation/state | Service/API | Önemli dosyalar |
+Şu kaynaklara öncelik ver:
 
-Business kodunu değiştirme. Sonuçta yalnızca güncellenen dokümanları ve bulunan önemli çelişkileri Yalnızca şu dosyaları oku:
+* Proje dokümantasyonu
+* .editorconfig ve analyzer ayarları
+* Aynı klasör ve namespace içindeki nesneler
+* Base class ve interface tanımları
+* Mapping kodları
+* Güncel ve yaygın kullanılan WALL/DTO örnekleri
+* İlgili testler
 
-* docs/copilot/mobile-transaction/PLAYBOOK.md
-* docs/copilot/mobile-transaction/EXAMPLES.md
+Aşağıdaki kuralları ayrı ayrı keşfet:
 
-Repository’yi veya Git geçmişini yeniden tarama.
-
-Bu bilgilerden aşağıdaki kısa prompt dosyalarını oluştur:
-
-1. .github/prompts/mobile-transaction-uygula.prompt.md
-2. .github/prompts/mobile-transaction-denetle.prompt.md
-3. .github/prompts/mobile-transaction-ogren.prompt.md
-4. docs/copilot/mobile-transaction/USAGE.md
-
-uygula promptu:
-
-* Talep, servis bilgisi ve referans transaction girdilerini alsın.
-* Önce PLAYBOOK’u okusun.
-* Koddan çıkarılabilen bilgileri kullanıcıya sormasın.
-* Yalnızca engelleyici soruları tek seferde sorsun.
-* Ekran, navigation, state, API, mapping, validation, resource, test, lint ve build dahil anahtar teslim geliştirsin.
-* İB veya MFA eklemesin.
-
-denetle promptu:
-
-* Talep, kapsam ve karşılaştırma branch’i girdilerini alsın.
-* Önce kod değiştirmeden eksiklik raporu oluştursun.
-* Dosya ve symbol kanıtı göstersin.
-* Test, lint ve build sonuçlarını bildirsin.
-* Kullanıcı “düzelt” demeden değişiklik yapmasın.
-
-öğren promptu:
-
-* Yalnızca kullanıcı tarafından doğrulanmış transaction’larda çalışsın.
-* Yeni ve tekrar kullanılabilir bilgileri PLAYBOOK’a eklesin.
-* Transaction’ı EXAMPLES’a eklesin.
-* PLAYBOOK’u gereksiz büyütmesin.
-* Business kodunu değiştirmesin.
-
-Her prompt kısa ve mümkünse 800 tokenın altında olsun.
-
-USAGE.md içerisinde üç komutun ne zaman ve hangi sırayla çalıştırılacağını, kopyalanabilir kısa örneklerle göster.
-
-Mevcut .github/copilot-instructions.md dosyasını silme. Yalnızca şu kısa yönlendirmeyi uygun yere ekle:
-
-“Mobil transaction işlerinde önce docs/copilot/mobile-transaction/PLAYBOOK.md okunmalı; İB ve MFA yapıları kapsam dışıdır.”
-
-Sohbet cevabında oluşturulan dosyaları listelemek dışında ayrıntı verme.
-
-
-
-
-
-Bu projedeki yazım, kodlama ve performans kurallarını keşfet; kalıcı olarak belgele ve otomatik denetlenebilir hâle getir.
-
-Amaç
-
-Projede kullanılan:
-
-* Değişken, sabit, property, metot, class, interface ve dosya adlandırma kuralları
-* Collection/list tanımlama kuralları
-* Liste oluşturulurken mümkünse başlangıç kapasitesi verilmesi
-* Metot ve class yapısı
+* Bir nesnenin WALL veya DTO olarak sınıflandırılma ölçütleri
+* Class ve dosya adlandırması
+* Değişken, property ve metot adlandırması
+* Property türleri ve null kullanılabilirliği
 * Erişim belirleyicileri
-* Null kontrolü
-* Exception yönetimi
-* Logging
-* Kaynak yönetimi
-* Async kullanımı
-* Performans kuralları
-* Güvenlik kuralları
-* Kod tekrarları
-* Yasaklanan kullanım biçimleri
-* Statik analiz veya kalite kontrol kuralları
+* Constructor kullanımı
+* Collection/list tanımlama kuralları
+* Eleman sayısı bilinen listelerde başlangıç kapasitesi verilmesi
+* Attribute ve annotation kullanımı
+* Kalıtım ve interface kuralları
+* Mapping kuralları
+* Serialization kuralları
+* Validation kuralları
+* WALL nesnelerine özel kurallar
+* DTO nesnelerine özel kurallar
+* Yasaklanan veya bulguya neden olan kullanımlar
 
-gibi standartları tespit et.
+Tespit edilen kuralları .github/WALL_DTO_RULES.md dosyasına yaz.
 
-Çalışma şekli
+Her kural şu yapıda olsun:
 
-1. Önce proje teknolojisini ve klasör yapısını belirle.
-2. Tüm dosyaları ayrıntılı biçimde okumak yerine önce şu kaynakları incele:
-    * README ve dokümantasyon dosyaları
-    * .editorconfig
-    * Linter/analyzer ayarları
-    * Build dosyaları
-    * Sonar, StyleCop, Roslyn, ESLint veya eşdeğer yapılandırmalar
-    * Ortak/base class’lar
-    * Helper ve utility sınıfları
-    * Benzer iş yapan, güncel ve yoğun kullanılan örnek dosyalar
-    * Varsa test projeleri
-3. Kuralları tek bir dosyadan tahmin etme. Birden fazla güncel örnekte tekrar eden uygulamaları karşılaştır.
-4. Eski kod, istisnai kod veya tesadüfi kullanım biçimlerini genel kural olarak kabul etme.
-5. Kesin kanıt bulunmayan kuralları uydurma. Bunları “aday kural” olarak işaretle.
-6. Mevcut proje dosyalarını bu aşamada değiştirme.
-
-Oluşturulacak belgeler
-
-Proje kökünde .github/copilot-instructions.md oluştur veya mevcutsa dikkatlice güncelle.
-
-Ayrıca docs/CODING_RULES.md oluştur. Her kural için şunları yaz:
-
-* Kural kimliği
-* Kategori
+* Kural kimliği: WALL-XXX, DTO-XXX veya COMMON-XXX
 * Kural açıklaması
+* Uygulandığı nesne türü
 * Doğru kullanım örneği
 * Yanlış kullanım örneği
-* Kuralın tespit edildiği dosya ve satır aralığı
+* Kaynak dosya ve satır referansı
 * Güven seviyesi: Kesin / Güçlü / Aday
-* Otomatik denetlenebilir mi?
-* İhlal önem seviyesi: Kritik / Yüksek / Orta / Düşük
-* Önerilen düzeltme
+* Bulgu önem seviyesi: Kritik / Yüksek / Orta / Düşük
 
-Örnek olarak şu kuralı özellikle araştır:
+Tek bir örneğe bakarak kural üretme. Emin olmadığın kuralları “Aday” olarak kaydet ve kesin bulgu üretmek için kullanma.
 
-Bir listenin alacağı yaklaşık eleman sayısı önceden biliniyorsa liste başlangıç kapasitesi belirtilmelidir.
+Kural dosyasını oluşturduktan sonra sonraki çalışmalarda projeyi yeniden genel olarak tarama.
 
-Ancak bunu doğrudan kesin proje kuralı kabul etme; proje kodunda, analiz ayarlarında veya dokümantasyonda kanıt ara.
+2. Verilen nesneyi bul
 
-Otomatik denetim
+NESNE_ADI değerini kullanarak:
 
-Projenin teknolojisine uygun bir denetim çözümü oluştur:
+* Nesnenin tanımlandığı dosyayı bul.
+* Aynı isimde birden fazla nesne varsa namespace ve kullanım yerlerini karşılaştır.
+* Doğru nesneyi kesin belirleyemiyorsan seçenekleri gösterip bana sor.
+* Dosyanın tamamını ve yalnızca gerekli doğrudan ilişkili kodları incele.
+* Gereksiz klasörleri ve tüm projeyi tarama.
 
-* Hazır analyzer/linter ile güvenilir şekilde denetlenebilen kurallar için mevcut aracı yapılandır.
-* Hazır araçla denetlenemeyen proje özel kuralları için mümkünse özel analyzer/linter veya denetim scripti oluştur.
-* C#/.NET ise tercihen Roslyn Analyzer kullan.
-* JavaScript/TypeScript ise ESLint custom rule kullan.
-* Java/Kotlin ise uygun statik analiz altyapısını kullan.
-* Başka bir teknoloji ise projeye en uygun, build sürecine eklenebilen çözümü seç.
-* Regex ile kod analizi yalnızca güvenilir parser/analyzer seçeneği yoksa kullan.
-* Denetim aracı varsayılan olarak yalnızca rapor üretmeli; kodu otomatik değiştirmemelidir.
-* Her özel kural için en az bir uygun kod ve bir ihlal testi ekle.
+3. Nesnenin türünü belirle
 
-Denetim raporu
+Nesnenin WALL mı DTO mu olduğunu yalnızca adına bakarak belirleme.
 
-Mevcut projeyi belirlenen kesin ve güçlü kurallara göre denetle ve reports/CODING_RULES_AUDIT.md oluştur.
+Şu kanıtları birlikte değerlendir:
 
-Her bulguda şunları göster:
+* Bulunduğu proje ve klasör
+* Namespace
+* Base class
+* Uyguladığı interface’ler
+* Attribute/annotation bilgileri
+* Mapping işlemleri
+* Metot parametresi veya dönüş tipi olarak kullanımı
+* Benzer nesnelerin yapısı
+* Projede tanımlanan WALL ve DTO kuralları
 
-* Kural kimliği
-* Önem seviyesi
-* Dosya yolu
-* Satır numarası
-* İhlal açıklaması
-* Mevcut kodun kısa özeti
-* Önerilen düzeltme
-* Otomatik düzeltilebilir mi?
+Sonuçta şunları bildir:
 
-Aynı ihlalleri tek tek uzun biçimde tekrar etme; kural bazında grupla ve toplam sayıyı belirt.
+* Belirlenen tür: WALL / DTO / Belirsiz
+* Güven seviyesi: Yüksek / Orta / Düşük
+* Türü belirlemekte kullanılan kısa kanıtlar
 
-Bağlam ve token tasarrufu
+Tür kesin belirlenemiyorsa tahmin ederek denetime devam etme; bana sor.
 
-* Daha önce oluşturulan docs/CODING_RULES.md güncelse projeyi tekrar tamamen tarama.
-* Sonraki çalışmalarda önce bu belgeyi ve değişen dosyaları oku.
-* Belgedeki her kuralın kaynak dosya referanslarını sakla.
-* Yalnızca değişen, yeni veya ilgili dosyaları yeniden incele.
-* Gereksiz dosya içeriklerini yanıta taşıma.
-* Büyük üretilmiş dosyaları, bağımlılık klasörlerini, build çıktılarını ve vendor dosyalarını inceleme.
-* Bir dosyayı tekrar okumadan önce daha önce kaydedilmiş bilginin yeterli olup olmadığını kontrol et.
+4. Nesneyi denetle
 
-Güvenlik
+Nesne WALL ise yalnızca:
 
-* İş mantığını değiştirme.
-* Mevcut kullanıcı değişikliklerini ezme.
-* Derleme veya test hatası bulunan projede önce hatanın senden önce var olup olmadığını kontrol et.
-* Kuralları otomatik düzeltme; yalnızca denetim altyapısını ve raporları oluştur.
-* Emin olunmayan bulguları kesin ihlal olarak raporlama.
+* COMMON-*
+* WALL-*
 
-Doğrulama
+kurallarını uygula.
 
-İşlem sonunda:
+Nesne DTO ise yalnızca:
 
-1. Oluşturulan denetim aracını çalıştır.
-2. Analyzer/linter testlerini çalıştır.
-3. Mümkünse projeyi derle.
-4. Yanlış pozitif olabilecek bulguları ayır.
-5. Belgelerdeki dosya ve satır referanslarını doğrula.
+* COMMON-*
+* DTO-*
 
-Son yanıt
+kurallarını uygula.
 
-Uzun açıklama yapma. Yalnızca şunları bildir:
+Şunları kontrol et:
 
-* Tespit edilen kesin/güçlü/aday kural sayıları
-* Oluşturulan veya değiştirilen dosyalar
-* Bulgu sayılarının önem seviyesine göre özeti
-* Çalıştırılan doğrulamalar ve sonuçları
-* İnsan kararı gereken aday kurallar
-* Denetimi yeniden çalıştırmak için tek komut
+* Class adı ve dosya adı
+* Değişken ve property adları
+* Metot adları ve imzaları
+* Property türleri
+* Null tanımlamaları
+* Collection/list kullanımları
+* Başlangıç kapasitesi verilmesi gereken listeler
+* Constructor yapısı
+* Attribute/annotation kullanımları
+* Mapping uyumu
+* Validation
+* Serialization
+* Erişim belirleyicileri
+* Kullanılmayan üyeler
+* Projeye özel diğer WALL/DTO kuralları
 
-Eksik bilgi gerektiğinde yalnızca ilerlemeyi gerçekten engelleyen tek bir soru sor. Diğer konularda projedeki kanıtlara göre karar ver ve işlemi tamamla.
+Sadece nesnenin kendisindeki ve doğrudan bu nesneden kaynaklanan bulguları raporla. İlişkisiz proje bulgularını rapora ekleme.
 
+5. Onay öncesi rapor
 
+Bu aşamada hiçbir kaynak kodu değiştirme.
 
+Bulguları şu tabloda göster:
 
+No	Kural	Önem	Dosya:Satır	Bulgu	Önerilen düzeltme
 
+Tablodan sonra şunları ayrıca yaz:
+
+* Nesne türü
+* İncelenen ana dosya
+* Toplam bulgu sayısı
+* Kritik/yüksek/orta/düşük dağılımı
+* Değiştirilecek dosyalar
+* Davranış değişikliği riski
+* Önerilen yeni aday kurallar
+
+Bulgu yoksa açıkça “Bu nesnede mevcut kurallara göre bulgu bulunamadı” yaz.
+
+Raporun sonunda dur ve yalnızca şu soruyu sor:
+
+Listelenen düzeltmeleri uygulamamı onaylıyor musunuz?
+
+6. Onay verilirse
+
+Ben açıkça onay vermeden:
+
+* Kaynak kodu değiştirme.
+* Otomatik düzeltme çalıştırma.
+* Refactoring yapma.
+* İlgisiz dosyalara dokunma.
+
+Onay verirsem:
+
+1. Yalnızca raporda listelenen ve onaylanan bulguları düzelt.
+2. Nesnenin mevcut işlevsel davranışını değiştirme.
+3. İlgisiz kodu biçimlendirme veya yeniden düzenleme.
+4. Mevcut kullanıcı değişikliklerini koru.
+5. Uygun testleri çalıştır.
+6. Mümkünse projeyi derle.
+7. Yeni hata oluşup oluşmadığını kontrol et.
+8. Sonuçta değiştirilen dosyaları ve yapılan düzeltmeleri kısa şekilde bildir.
+9. Her düzeltmeyi ilgili kural kimliğiyle eşleştir.
+
+Bağlam ve token kullanımı
+
+* .github/WALL_DTO_RULES.md mevcutsa kuralları yeniden keşfetme.
+* Yalnızca verilen nesneyi ve zorunlu doğrudan bağımlılıklarını incele.
+* Build çıktıları, paketler, generated dosyalar ve vendor klasörlerini tarama.
+* Uzun kod parçalarını yanıta kopyalama.
+* Aynı dosyayı gereksiz yere tekrar okuma.
+* Raporu kısa ve bulgu odaklı hazırla.
